@@ -1,467 +1,834 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>C++ Comprehensive Report (Jan 28 – Feb 3)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Ultimate Guide: Complete Report & Extensions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: "Documentation Standard"
+         Background: #F9FAFB (Gray 50)
+         Sidebar: #FFFFFF (White)
+         Text: #111827 (Gray 900)
+         Accents: #2563EB (Blue 600) for links/headers, #D97706 (Amber 600) for warnings.
+         Code Background: #1F2937 (Gray 800)
+    -->
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .font-code { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Sidebar styling */
+        .sidebar-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #4B5563;
+            border-left: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            color: #2563EB;
+            border-left-color: #2563EB;
+            background-color: #EFF6FF;
+        }
+        .sidebar-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #9CA3AF;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            font-weight: 700;
+        }
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+        /* Code block syntax highlighting simulation */
+        .code-block {
+            background-color: #1F2937;
+            color: #E5E7EB;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        .kw { color: #C084FC; } /* Keyword - Purple */
+        .ty { color: #60A5FA; } /* Type - Blue */
+        .str { color: #34D399; } /* String - Green */
+        .num { color: #F87171; } /* Number - Red */
+        .com { color: #9CA3AF; font-style: italic; } /* Comment - Gray */
+        .fn { color: #FBBF24; } /* Function - Amber */
 
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      scroll-behavior: smooth;
-      line-height: 1.65;
-    }
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .data-table th {
+            background-color: #F3F4F6;
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 2px solid #E5E7EB;
+            color: #374151;
+        }
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #E5E7EB;
+            color: #4B5563;
+        }
+        .data-table tr:last-child td { border-bottom: none; }
 
-    html { scroll-padding-top: 96px; }
-
-    /* Sidebar */
-    .sidebar-link {
-      display: block;
-      padding: 0.55rem 1rem;
-      font-size: 0.875rem;
-      color: #4b5563;
-      border-left: 3px solid transparent;
-      transition: all 0.15s ease;
-    }
-
-    .sidebar-link:hover,
-    .sidebar-link.active {
-      color: #1d4ed8;
-      border-left-color: #1d4ed8;
-      background-color: #eef2ff;
-    }
-
-    .sidebar-header {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #9ca3af;
-      margin: 1.75rem 0 0.5rem;
-      padding-left: 1rem;
-      font-weight: 700;
-    }
-
-    /* Code blocks */
-    .code-block {
-      background: linear-gradient(180deg, #0f172a, #020617);
-      color: #e5e7eb;
-      padding: 1.1rem 1.2rem;
-      border-radius: 0.75rem;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      line-height: 1.55;
-      margin: 1rem 0;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
-    }
-
-    .kw  { color: #c084fc; }
-    .ty  { color: #60a5fa; }
-    .str { color: #34d399; }
-    .num { color: #f87171; }
-    .com { color: #9ca3af; font-style: italic; }
-    .fn  { color: #fbbf24; }
-
-    /* Tables */
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.875rem;
-      margin: 1rem 0;
-    }
-
-    .data-table th {
-      background: #f8fafc;
-      text-align: left;
-      padding: 0.75rem;
-      border-bottom: 2px solid #e5e7eb;
-      color: #374151;
-    }
-
-    .data-table td {
-      padding: 0.7rem;
-      border-bottom: 1px solid #e5e7eb;
-      color: #4b5563;
-    }
-
-    .data-table tr:last-child td {
-      border-bottom: none;
-    }
-  </style>
+        /* Smooth scrolling for anchor links */
+        html { scroll-padding-top: 80px; }
+    </style>
 </head>
-
 <body class="bg-gray-50 text-gray-900 h-screen flex flex-col md:flex-row overflow-hidden">
 
-<!-- Mobile Header -->
-<header class="md:hidden bg-white border-b p-4 flex justify-between items-center z-50">
-  <h1 class="font-bold text-lg text-blue-700">C++ Report</h1>
-  <button id="menu-toggle">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M4 6h16M4 12h16M4 18h16"/>
-    </svg>
-  </button>
-</header>
+    <!-- Mobile Header -->
+    <header class="md:hidden bg-white border-b border-gray-200 p-4 flex justify-between items-center z-50">
+        <h1 class="font-bold text-lg text-blue-700">C++ Report</h1>
+        <button id="menu-toggle" class="text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+    </header>
 
-<!-- Sidebar -->
-<aside id="sidebar"
-  class="w-full md:w-64 bg-white border-r flex-shrink-0 h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 absolute md:relative z-40">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-full md:w-64 bg-white border-r border-gray-200 flex-shrink-0 flex flex-col h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 absolute md:relative z-40">
+        <div class="p-6 border-b border-gray-100 hidden md:block">
+            <h1 class="text-xl font-bold tracking-tight text-blue-700">C++ Ultimate</h1>
+            <p class="text-xs text-gray-500 mt-1">Full Report + Extensions</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4">
+            <div class="sidebar-header">Jan 28 - Basics</div>
+            <a href="#style" class="sidebar-link">Writing Style & Includes</a>
+            <a href="#naming" class="sidebar-link">Naming & Punctuation</a>
+            <a href="#variables" class="sidebar-link">Variables & Types</a>
+            <a href="#operators" class="sidebar-link">Operators (Math/Logic)</a>
+            <a href="#file-io" class="sidebar-link text-indigo-600 font-medium">★ File I/O (New)</a>
+            
+            <div class="sidebar-header">Jan 29 - Structures</div>
+            <a href="#tuples" class="sidebar-link">Tuples</a>
+            <a href="#arrays-vectors" class="sidebar-link">Arrays vs Vectors</a>
+            <a href="#algorithms" class="sidebar-link text-indigo-600 font-medium">★ Standard Algorithms (New)</a>
+            
+            <div class="sidebar-header">Feb 2 - Memory & Control</div>
+            <a href="#references" class="sidebar-link">References & Pointers</a>
+            <a href="#conditionals" class="sidebar-link">Conditionals (Switch)</a>
+            <a href="#functions" class="sidebar-link">Functions & Args</a>
+            <a href="#commandline" class="sidebar-link">Command Line Args</a>
+            <a href="#hashmaps-intro" class="sidebar-link">Hash Maps Intro</a>
 
-  <div class="p-6 border-b hidden md:block">
-    <h1 class="text-xl font-bold text-blue-700">C++ Master Guide</h1>
-    <p class="text-xs text-gray-500 mt-1">Jan 28 – Feb 3, 2026</p>
-  </div>
+            <div class="sidebar-header">Feb 3 - OOP</div>
+            <a href="#classes" class="sidebar-link">Classes & Objects</a>
+            <a href="#access" class="sidebar-link">Access Specifiers</a>
+            <a href="#inheritance" class="sidebar-link text-indigo-600 font-medium">★ Inheritance (New)</a>
+            <a href="#encapsulation" class="sidebar-link">Encapsulation</a>
+            <a href="#constructors" class="sidebar-link">Constructors & Destructors</a>
+            
+            <div class="sidebar-header">Advanced Data</div>
+            <a href="#multidimensional" class="sidebar-link">Multidimensional Arrays</a>
+            <a href="#vector-methods" class="sidebar-link">Vector Methods</a>
+            <a href="#hashmap-methods" class="sidebar-link">Hash Map Deep Dive</a>
+        </nav>
+    </aside>
 
-  <nav class="flex-1 overflow-y-auto py-4">
-    <div class="sidebar-header">Jan 28 – Basics</div>
-    <a href="#style" class="sidebar-link">Writing Style</a>
-    <a href="#naming" class="sidebar-link">Naming</a>
-    <a href="#variables" class="sidebar-link">Variables</a>
-    <a href="#operators" class="sidebar-link">Operators</a>
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-10 scroll-smooth" id="main-content">
+        <div class="max-w-4xl mx-auto space-y-16 pb-24">
 
-    <div class="sidebar-header">Jan 29 – Structures</div>
-    <a href="#tuples" class="sidebar-link">Tuples</a>
-    <a href="#arrays-vectors" class="sidebar-link">Arrays vs Vectors</a>
-  </nav>
-</aside>
-
-<!-- Main Content -->
-<main id="main-content" class="flex-1 overflow-y-auto p-6 md:p-10">
-  <div class="max-w-4xl mx-auto space-y-16 pb-24">
-
-    <!-- STYLE -->
-    <section id="style">
-      <div class="text-sm font-bold text-blue-600 uppercase mb-2">January 28, 2026</div>
-      <h2 class="text-3xl font-bold mb-6">C++ Writing Style</h2>
-
-      <div class="grid lg:grid-cols-2 gap-6">
-        <div class="border-l-4 border-green-500 pl-4">
-          <h3 class="font-bold text-green-700 mb-2">Correct</h3>
-          <div class="code-block">
+            <!-- INTRO / STYLE -->
+            <section id="style">
+                <div class="mb-4 text-sm font-bold text-blue-600 uppercase tracking-wide">January 28, 2026</div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">C++ Writing Style</h2>
+                
+                <p class="mb-4 text-gray-700">Correct structure is critical. Below is a comparison of valid vs invalid code structure.</p>
+                
+                <div class="grid lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Correct -->
+                    <div class="border-l-4 border-green-500 pl-4">
+                        <h3 class="font-bold text-green-700 mb-2">✓ Correct Style</h3>
+                        <div class="code-block">
 <span class="com">#include &lt;iostream&gt;</span>
 <span class="com">#include &lt;string&gt;</span>
 
 <span class="kw">using namespace</span> std;
 
+<span class="com">// This program prints out "Hello World!"</span>
 <span class="kw">int</span> <span class="fn">main</span>() {
   <span class="ty">string</span> message = <span class="str">"Hello World!\n"</span>;
   cout &lt;&lt; message;
   <span class="kw">return</span> <span class="num">0</span>;
 }
-          </div>
-        </div>
-
-        <div class="border-l-4 border-red-500 pl-4">
-          <h3 class="font-bold text-red-700 mb-2">Wrong</h3>
-          <div class="code-block">
-<span class="kw">using namespace</span> std; <span class="com">#include &lt;iostream&gt;</span>
-<span class="ty">string</span> M = <span class="str">"Hello"</span>;
-
-<span class="kw">int</span> <span class="fn">main</span>() {
-  cout &lt;&lt; M;;
-  <span class="kw">return</span> <span class="num">3</span>;
-}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- NAMING -->
-    <section id="naming">
-      <h2 class="text-2xl font-bold mb-4">Naming Conventions</h2>
-      <ul class="list-disc list-inside text-gray-700 space-y-2">
-        <li>Names cannot start with digits</li>
-        <li>Avoid C++ keywords</li>
-        <li><strong>PascalCase</strong> → classes, functions</li>
-        <li><strong>snake_case</strong> → variables</li>
-      </ul>
-    </section>
-
-    <!-- VARIABLES -->
-    <section id="variables">
-      <h2 class="text-2xl font-bold mb-4">Variables & Type Conversion</h2>
-      <div class="code-block">
-<span class="ty">double</span> a = <span class="num">3.5</span>;
-<span class="ty">int</span> b = (<span class="ty">int</span>) a; <span class="com">// b = 3</span>
-      </div>
-    </section>
-
-    <!-- OPERATORS -->
-    <section id="operators">
-      <h2 class="text-2xl font-bold mb-4">Operators</h2>
-      <table class="data-table">
-        <tr><th>Operator</th><th>Description</th></tr>
-        <tr><td>+</td><td>Addition</td></tr>
-        <tr><td>%</td><td>Modulus</td></tr>
-        <tr><td>++</td><td>Increment</td></tr>
-      </table>
-    </section>
-
-    <!-- TUPLES -->
-    <section id="tuples">
-      <div class="text-sm font-bold text-blue-600 uppercase mb-2">January 29, 2026</div>
-      <h2 class="text-2xl font-bold mb-4">std::tuple</h2>
-      <div class="code-block">
-std::tuple&lt;<span class="ty">int</span>, <span class="ty">string</span>, <span class="ty">double</span>&gt; student(
-  <span class="num">1</span>, <span class="str">"Alice"</span>, <span class="num">3.8</span>);
-      </div>
-    </section>
-
-    <!-- ARRAYS VS VECTORS -->
-    <section id="arrays-vectors">
-      <h2 class="text-2xl font-bold mb-4">Arrays vs Vectors</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="font-bold mb-2">std::vector</h3>
-          <div class="code-block">
-vector&lt;<span class="ty">int</span>&gt; v(n);
-          </div>
-        </div>
-        <div>
-          <h3 class="font-bold mb-2">std::array</h3>
-          <div class="code-block">
-array&lt;<span class="ty">int</span>, <span class="num">3</span>&gt; a;
-          </div>
-        </div>
-      </div>
-    </section>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>C++ Comprehensive Report (Jan 28 – Feb 3)</title>
-
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      scroll-behavior: smooth;
-      line-height: 1.65;
-    }
-
-    html { scroll-padding-top: 96px; }
-
-    /* Sidebar */
-    .sidebar-link {
-      display: block;
-      padding: 0.55rem 1rem;
-      font-size: 0.875rem;
-      color: #4b5563;
-      border-left: 3px solid transparent;
-      transition: all 0.15s ease;
-    }
-
-    .sidebar-link:hover,
-    .sidebar-link.active {
-      color: #1d4ed8;
-      border-left-color: #1d4ed8;
-      background-color: #eef2ff;
-    }
-
-    .sidebar-header {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #9ca3af;
-      margin: 1.75rem 0 0.5rem;
-      padding-left: 1rem;
-      font-weight: 700;
-    }
-
-    /* Code blocks */
-    .code-block {
-      background: linear-gradient(180deg, #0f172a, #020617);
-      color: #e5e7eb;
-      padding: 1.1rem 1.2rem;
-      border-radius: 0.75rem;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      line-height: 1.55;
-      margin: 1rem 0;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
-    }
-
-    .kw  { color: #c084fc; }
-    .ty  { color: #60a5fa; }
-    .str { color: #34d399; }
-    .num { color: #f87171; }
-    .com { color: #9ca3af; font-style: italic; }
-    .fn  { color: #fbbf24; }
-
-    /* Tables */
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.875rem;
-      margin: 1rem 0;
-    }
-
-    .data-table th {
-      background: #f8fafc;
-      text-align: left;
-      padding: 0.75rem;
-      border-bottom: 2px solid #e5e7eb;
-      color: #374151;
-    }
-
-    .data-table td {
-      padding: 0.7rem;
-      border-bottom: 1px solid #e5e7eb;
-      color: #4b5563;
-    }
-
-    .data-table tr:last-child td {
-      border-bottom: none;
-    }
-  </style>
-</head>
-
-<body class="bg-gray-50 text-gray-900 h-screen flex flex-col md:flex-row overflow-hidden">
-
-<!-- Mobile Header -->
-<header class="md:hidden bg-white border-b p-4 flex justify-between items-center z-50">
-  <h1 class="font-bold text-lg text-blue-700">C++ Report</h1>
-  <button id="menu-toggle">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M4 6h16M4 12h16M4 18h16"/>
-    </svg>
-  </button>
-</header>
-
-<!-- Sidebar -->
-<aside id="sidebar"
-  class="w-full md:w-64 bg-white border-r flex-shrink-0 h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 absolute md:relative z-40">
-
-  <div class="p-6 border-b hidden md:block">
-    <h1 class="text-xl font-bold text-blue-700">C++ Master Guide</h1>
-    <p class="text-xs text-gray-500 mt-1">Jan 28 – Feb 3, 2026</p>
-  </div>
-
-  <nav class="flex-1 overflow-y-auto py-4">
-    <div class="sidebar-header">Jan 28 – Basics</div>
-    <a href="#style" class="sidebar-link">Writing Style</a>
-    <a href="#naming" class="sidebar-link">Naming</a>
-    <a href="#variables" class="sidebar-link">Variables</a>
-    <a href="#operators" class="sidebar-link">Operators</a>
-
-    <div class="sidebar-header">Jan 29 – Structures</div>
-    <a href="#tuples" class="sidebar-link">Tuples</a>
-    <a href="#arrays-vectors" class="sidebar-link">Arrays vs Vectors</a>
-  </nav>
-</aside>
-
-<!-- Main Content -->
-<main id="main-content" class="flex-1 overflow-y-auto p-6 md:p-10">
-  <div class="max-w-4xl mx-auto space-y-16 pb-24">
-
-    <!-- STYLE -->
-    <section id="style">
-      <div class="text-sm font-bold text-blue-600 uppercase mb-2">January 28, 2026</div>
-      <h2 class="text-3xl font-bold mb-6">C++ Writing Style</h2>
-
-      <div class="grid lg:grid-cols-2 gap-6">
-        <div class="border-l-4 border-green-500 pl-4">
-          <h3 class="font-bold text-green-700 mb-2">Correct</h3>
-          <div class="code-block">
-<span class="com">#include &lt;iostream&gt;</span>
+                        </div>
+                    </div>
+                    <!-- Wrong -->
+                    <div class="border-l-4 border-red-500 pl-4">
+                        <h3 class="font-bold text-red-700 mb-2">✕ WRONG!</h3>
+                        <div class="code-block">
+<span class="kw">using namespace</span> std; <span class="com">#include    &lt;iostream&gt;</span>
 <span class="com">#include &lt;string&gt;</span>
 
-<span class="kw">using namespace</span> std;
+<span class="ty">string</span> M= <span class="str">"Hello World!\n"</span>;
 
 <span class="kw">int</span> <span class="fn">main</span>() {
-  <span class="ty">string</span> message = <span class="str">"Hello World!\n"</span>;
-  cout &lt;&lt; message;
-  <span class="kw">return</span> <span class="num">0</span>;
-}
-          </div>
-        </div>
-
-        <div class="border-l-4 border-red-500 pl-4">
-          <h3 class="font-bold text-red-700 mb-2">Wrong</h3>
-          <div class="code-block">
-<span class="kw">using namespace</span> std; <span class="com">#include &lt;iostream&gt;</span>
-<span class="ty">string</span> M = <span class="str">"Hello"</span>;
-
-<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="com">// Does some stuff</span>
   cout &lt;&lt; M;;
-  <span class="kw">return</span> <span class="num">3</span>;
+  <span class="kw">return</span> (<span class="num">3</span>);
 }
-          </div>
-        </div>
-      </div>
-    </section>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- NAMING -->
-    <section id="naming">
-      <h2 class="text-2xl font-bold mb-4">Naming Conventions</h2>
-      <ul class="list-disc list-inside text-gray-700 space-y-2">
-        <li>Names cannot start with digits</li>
-        <li>Avoid C++ keywords</li>
-        <li><strong>PascalCase</strong> → classes, functions</li>
-        <li><strong>snake_case</strong> → variables</li>
-      </ul>
-    </section>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Include Statement Order</h3>
+                <p class="text-gray-700 mb-4">Include headers should be listed in the following order:</p>
+                <ol class="list-decimal list-inside bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4 text-gray-700">
+                    <li>C System Headers (e.g., <code>&lt;stdlib.h&gt;</code>)</li>
+                    <li>C++ Standard Library Headers (e.g., <code>&lt;iostream&gt;</code>)</li>
+                    <li>User-Defined Libraries' Headers (e.g., <code>"foo/server/bar.h"</code>)</li>
+                </ol>
+            </section>
 
-    <!-- VARIABLES -->
-    <section id="variables">
-      <h2 class="text-2xl font-bold mb-4">Variables & Type Conversion</h2>
-      <div class="code-block">
+            <!-- NAMING -->
+            <section id="naming">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Naming Convention & Punctuation</h2>
+                <p class="text-gray-700 mb-4">Names can never start with a digit. Avoid reserved keywords.</p>
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-blue-900">PascalCase</h4>
+                        <p class="text-sm text-blue-800">For Classes & Functions.</p>
+                        <p class="font-code text-sm mt-2 text-gray-800">LinkedList, BubbleSort()</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-purple-900">snake_case</h4>
+                        <p class="text-sm text-purple-800">For Variables.</p>
+                        <p class="font-code text-sm mt-2 text-gray-800">student_id, result</p>
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold mb-2">Punctuation Marks</h3>
+                <ul class="list-disc list-inside space-y-2 text-gray-700 mb-6">
+                    <li><strong>Brackets {}:</strong> Open on same line, close under last line of scope.</li>
+                    <li><strong>Parentheses ():</strong> Space before <code>(</code> in statements, no space in functions.</li>
+                    <li><strong>Commas ,:</strong> Always a blank space after each comma.</li>
+                </ul>
+                <div class="code-block">
+<span class="kw">int</span> <span class="fn">GetLargerNumber</span>(<span class="ty">int</span> num_one, <span class="ty">int</span> num_two) {
+  <span class="kw">if</span> (num_one > num_two) {
+    <span class="kw">return</span> num_one;
+  }
+  <span class="kw">else</span> {
+    <span class="kw">return</span> num_two;
+  }
+}
+                </div>
+            </section>
+
+            <!-- VARIABLES -->
+            <section id="variables">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Variables, Input/Output & Comments</h2>
+                
+                <div class="space-y-6 text-gray-700">
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-800">Single vs Multi-line Comments</h3>
+                        <div class="code-block">
+<span class="com">// Single-line: The compiler ignores text after //</span>
+cout &lt;&lt; <span class="str">"Codecademy rocks!"</span>;
+
+<span class="com">/* Multi-line comments begin with /* and end with */</span>
+<span class="kw">int</span> <span class="fn">multiply</span>(<span class="ty">int</span> a, <span class="ty">int</span> b) { <span class="kw">return</span> a * b; }
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-800">Std::Cout & New Lines</h3>
+                        <p class="mb-2"><code>\n</code> and <code>std::endl</code> both create new lines.</p>
+                        <div class="code-block">
+std::cout &lt;&lt; <span class="str">"Candy is "</span> &lt;&lt; <span class="num">10</span> &lt;&lt; <span class="str">" years old."</span>;
+std::cout &lt;&lt; <span class="str">"Hello World!\n"</span>;
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-800">Type Conversion</h3>
+                        <p class="mb-2">Converting <code>int</code> to <code>double</code> (casting).</p>
+                        <div class="code-block">
 <span class="ty">double</span> a = <span class="num">3.5</span>;
-<span class="ty">int</span> b = (<span class="ty">int</span>) a; <span class="com">// b = 3</span>
-      </div>
-    </section>
+<span class="ty">int</span> b = (<span class="ty">int</span>) a; <span class="com">// b is now 3</span>
+                        </div>
+                    </div>
 
-    <!-- OPERATORS -->
-    <section id="operators">
-      <h2 class="text-2xl font-bold mb-4">Operators</h2>
-      <table class="data-table">
-        <tr><th>Operator</th><th>Description</th></tr>
-        <tr><td>+</td><td>Addition</td></tr>
-        <tr><td>%</td><td>Modulus</td></tr>
-        <tr><td>++</td><td>Increment</td></tr>
-      </table>
-    </section>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-800">String Methods</h3>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Concatenation: <code>+</code></li>
+                            <li>Access: <code>[]</code></li>
+                            <li>Length: <code>.length()</code></li>
+                        </ul>
+                        <div class="code-block">
+<span class="ty">string</span> message = <span class="str">"Hello World"</span>;
+<span class="ty">int</span> len = message.length(); <span class="com">// 11</span>
+<span class="ty">char</span> letter = message[<span class="num">1</span>]; <span class="com">// 'e'</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <!-- TUPLES -->
-    <section id="tuples">
-      <div class="text-sm font-bold text-blue-600 uppercase mb-2">January 29, 2026</div>
-      <h2 class="text-2xl font-bold mb-4">std::tuple</h2>
-      <div class="code-block">
-std::tuple&lt;<span class="ty">int</span>, <span class="ty">string</span>, <span class="ty">double</span>&gt; student(
-  <span class="num">1</span>, <span class="str">"Alice"</span>, <span class="num">3.8</span>);
-      </div>
-    </section>
+            <!-- OPERATORS -->
+            <section id="operators">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Operators</h2>
+                
+                <h3 class="font-bold text-lg mb-2">Arithmetic</h3>
+                <table class="data-table">
+                    <thead><tr><th>Operator</th><th>Name</th><th>Example</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>+</td><td>Addition</td><td>x + y</td><td>x plus y</td></tr>
+                        <tr><td>%</td><td>Modulus</td><td>x % y</td><td>Remainder of x / y</td></tr>
+                        <tr><td>++</td><td>Pre/Post Increment</td><td>++x / x++</td><td>Increment value</td></tr>
+                    </tbody>
+                </table>
 
-    <!-- ARRAYS VS VECTORS -->
-    <section id="arrays-vectors">
-      <h2 class="text-2xl font-bold mb-4">Arrays vs Vectors</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="font-bold mb-2">std::vector</h3>
-          <div class="code-block">
-vector&lt;<span class="ty">int</span>&gt; v(n);
-          </div>
+                <div class="bg-yellow-50 p-4 border-l-4 border-yellow-400 my-4">
+                    <h4 class="font-bold text-yellow-800">Pre vs Post Increment</h4>
+                    <p class="text-sm text-yellow-800 mb-2"><strong>Pre (++x):</strong> Increment first, then return.</p>
+                    <p class="text-sm text-yellow-800"><strong>Post (x++):</strong> Copy first, increment, then return copy.</p>
+                </div>
+
+                <h3 class="font-bold text-lg mb-2 mt-6">Bitwise Operators</h3>
+                <div class="grid grid-cols-3 gap-2 font-code text-sm mb-6">
+                    <div class="bg-gray-200 p-2 text-center rounded">Left Shift &lt;&lt;</div>
+                    <div class="bg-gray-200 p-2 text-center rounded">Right Shift &gt;&gt;</div>
+                    <div class="bg-gray-200 p-2 text-center rounded">NOT ~</div>
+                    <div class="bg-gray-200 p-2 text-center rounded">AND &</div>
+                    <div class="bg-gray-200 p-2 text-center rounded">OR |</div>
+                    <div class="bg-gray-200 p-2 text-center rounded">XOR ^</div>
+                </div>
+
+                <h3 class="font-bold text-lg mb-2">Operator Precedence</h3>
+                <table class="data-table">
+                    <thead><tr><th>Lvl</th><th>Operator</th><th>Name</th></tr></thead>
+                    <tbody>
+                        <tr><td>2</td><td>() ++ --</td><td>Parentheses, Post-fix</td></tr>
+                        <tr><td>3</td><td>++ -- ! ~</td><td>Prefix, Logic/Bitwise NOT</td></tr>
+                        <tr><td>5</td><td>* / %</td><td>Multiplication...</td></tr>
+                        <tr><td>10</td><td>== !=</td><td>Equality</td></tr>
+                        <tr><td>11</td><td>&</td><td>Bitwise AND</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- NEW SECTION: FILE I/O -->
+            <section id="file-io" class="border-t-2 border-indigo-100 pt-8 mt-8">
+                 <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs font-bold uppercase">Extension</span>
+                    <h2 class="text-2xl font-bold text-gray-900">File I/O</h2>
+                </div>
+                <p class="text-gray-700 mb-4">
+                    While <code>iostream</code> handles the terminal, <code>fstream</code> handles reading and writing to files.
+                </p>
+                <div class="code-block">
+<span class="com">#include &lt;fstream&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+  <span class="com">// Write to a file</span>
+  <span class="ty">ofstream</span> MyFile(<span class="str">"filename.txt"</span>);
+  MyFile &lt;&lt; <span class="str">"Files are fun!"</span>;
+  MyFile.close();
+
+  <span class="com">// Read from a file</span>
+  <span class="ty">string</span> myText;
+  <span class="ty">ifstream</span> MyReadFile(<span class="str">"filename.txt"</span>);
+  
+  <span class="kw">while</span> (getline(MyReadFile, myText)) {
+    cout &lt;&lt; myText;
+  }
+  MyReadFile.close();
+}
+                </div>
+            </section>
+
+            <!-- TUPLES -->
+            <section id="tuples">
+                <div class="mb-4 text-sm font-bold text-blue-600 uppercase tracking-wide">January 29, 2026</div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">std::tuple</h2>
+                <p class="text-gray-700 mb-4">Fixed-size collection of heterogeneous values. Unlike pairs, tuples can hold unlimited elements.</p>
+                
+                <div class="code-block">
+<span class="com">// 1. Creation</span>
+std::tuple&lt;<span class="ty">int</span>, <span class="ty">string</span>, <span class="ty">double</span>&gt; student(<span class="num">1</span>, <span class="str">"Alice"</span>, <span class="num">3.8</span>);
+<span class="com">// 2. Accessing</span>
+<span class="ty">int</span> id = std::get&lt;<span class="num">0</span>&gt;(student);
+<span class="com">// 3. Modifying</span>
+std::get&lt;<span class="num">2</span>&gt;(student) = <span class="num">4.0</span>;
+                </div>
+                
+                <h3 class="font-bold text-lg mt-4 mb-2">Helper Functions</h3>
+                <ul class="list-disc list-inside text-gray-700">
+                    <li><code>std::make_tuple</code>: Create tuple without explicit types.</li>
+                    <li><code>std::tie</code>: Unpack tuple into variables.</li>
+                    <li><code>std::tuple_cat</code>: Concatenate tuples.</li>
+                </ul>
+            </section>
+
+            <!-- ARRAYS VS VECTORS -->
+            <section id="arrays-vectors">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Arrays vs Vectors</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-gray-800">std::vector (Dynamic)</h3>
+                        <p class="text-sm text-gray-600 mb-2">Use when size is unknown.</p>
+                        <div class="code-block">
+vector&lt;<span class="ty">int</span>&gt; row(n);
+<span class="kw">for</span>(<span class="ty">int</span> i=0; i&lt;n; i++) {
+   cin >> row[i];
+}
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800">std::array (Fixed)</h3>
+                        <p class="text-sm text-gray-600 mb-2">Better performance, known size.</p>
+                        <div class="code-block">
+array&lt;<span class="ty">int</span>, <span class="num">3</span>&gt; row;
+<span class="kw">for</span>(<span class="ty">int</span> i=0; i&lt;3; i++) {
+   cin >> row[i];
+}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- NEW SECTION: ALGORITHMS -->
+            <section id="algorithms" class="border-t-2 border-indigo-100 pt-8 mt-8">
+                 <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs font-bold uppercase">Extension</span>
+                    <h2 class="text-2xl font-bold text-gray-900">Standard Algorithms</h2>
+                </div>
+                <p class="text-gray-700 mb-4">
+                    Since you are using Vectors, you will often need to sort or find items. The <code>&lt;algorithm&gt;</code> library is essential.
+                </p>
+                <div class="code-block">
+<span class="com">#include &lt;algorithm&gt;</span>
+<span class="com">#include &lt;vector&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+  <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; v = {<span class="num">4</span>, <span class="num">2</span>, <span class="num">5</span>, <span class="num">1</span>, <span class="num">3</span>};
+  
+  <span class="com">// Sort from smallest to largest</span>
+  std::sort(v.begin(), v.end()); 
+  <span class="com">// v is now {1, 2, 3, 4, 5}</span>
+  
+  <span class="com">// Find an element</span>
+  <span class="kw">if</span> (std::find(v.begin(), v.end(), <span class="num">3</span>) != v.end()) {
+      cout &lt;&lt; <span class="str">"Found 3!"</span>;
+  }
+}
+                </div>
+            </section>
+
+            <!-- MEMORY: REFERENCES & POINTERS -->
+            <section id="references">
+                <div class="mb-4 text-sm font-bold text-blue-600 uppercase tracking-wide">February 2, 2026</div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Memory: References & Pointers</h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded shadow border border-gray-200">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">References (&)</h3>
+                        <p class="text-gray-700 mb-2">An alias to an existing variable. Must be initialized.</p>
+                        <div class="code-block">
+<span class="ty">int</span> exam_grade = <span class="num">85</span>;
+<span class="ty">int</span>& score = exam_grade; <span class="com">// score is alias for exam_grade</span>
+                        </div>
+                        <p class="text-sm text-red-600 italic">Warning: References cannot be reassigned!</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded shadow border border-gray-200">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Pointers (*)</h3>
+                        <p class="text-gray-700 mb-2">Stores a memory address. Can be <code>nullptr</code>.</p>
+                        <div class="code-block">
+<span class="ty">int</span>* ptr = nullptr;
+<span class="ty">string</span> day = <span class="str">"Monday"</span>;
+<span class="ty">string</span>* ptr = &day; <span class="com">// & = Address Of</span>
+cout &lt;&lt; *ptr; <span class="com">// * = Dereference (Get Value) -> "Monday"</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONDITIONALS -->
+            <section id="conditionals">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Switch Statement</h2>
+                <div class="code-block">
+<span class="kw">switch</span> (grade) {
+  <span class="kw">case</span> <span class="num">9</span>:
+    cout &lt;&lt; <span class="str">"Freshman\n"</span>;
+    <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="num">10</span>:
+    cout &lt;&lt; <span class="str">"Sophomore\n"</span>;
+    <span class="kw">break</span>;
+  <span class="kw">default</span>:
+    cout &lt;&lt; <span class="str">"Invalid\n"</span>;
+    <span class="kw">break</span>;
+}
+                </div>
+            </section>
+
+            <!-- FUNCTIONS & ARGS -->
+            <section id="functions">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Functions</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="font-bold text-gray-800">Structure</h3>
+                        <ul class="list-disc list-inside text-sm text-gray-700">
+                            <li><strong>Declaration:</strong> Name, Return type, Params.</li>
+                            <li><strong>Definition:</strong> Body code.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800">Overloading</h3>
+                        <p class="text-sm text-gray-700">Same name, different parameters.</p>
+                        <code class="text-xs bg-gray-200 p-1 rounded">int add(int a, int b)</code><br>
+                        <code class="text-xs bg-gray-200 p-1 rounded">double add(double a, double b)</code>
+                    </div>
+                </div>
+
+                <!-- Interactive Pass By Reference Demo -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                    <h3 class="font-bold text-blue-900 mb-2">Interactive: Pass by Reference vs Value</h3>
+                    <p class="text-sm text-blue-800 mb-4">
+                        If you pass by value, the swap happens only inside the function. If you pass by reference (<code>&</code>), the original variables change.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-white p-4 rounded text-center">
+                            <p class="text-xs font-bold text-gray-500 uppercase">Variable A</p>
+                            <span id="var-a" class="text-2xl font-mono font-bold text-blue-600">10</span>
+                        </div>
+                        <div class="bg-white p-4 rounded text-center">
+                            <p class="text-xs font-bold text-gray-500 uppercase">Variable B</p>
+                            <span id="var-b" class="text-2xl font-mono font-bold text-green-600">20</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button onclick="simulateSwap(false)" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition">
+                            Swap by Value (int i)
+                        </button>
+                        <button onclick="simulateSwap(true)" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition shadow">
+                            Swap by Ref (int &i)
+                        </button>
+                    </div>
+                    <p id="swap-msg" class="text-center mt-3 text-sm font-bold h-6"></p>
+                </div>
+            </section>
+
+            <!-- COMMAND LINE ARGS -->
+            <section id="commandline">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Command Line Arguments</h2>
+                <div class="code-block">
+<span class="kw">int</span> <span class="fn">main</span>(<span class="ty">int</span> argc, <span class="ty">char</span>* argv[])
+                </div>
+                <p class="text-gray-700 mb-2"><strong>argc:</strong> Argument Count. <strong>argv:</strong> Argument Vector (Array).</p>
+                <div class="bg-black text-green-400 p-3 rounded font-code text-sm">
+                    $ ./greeting "Code cademy"<br>
+                    arg 0: ./greeting<br>
+                    arg 1: Code cademy
+                </div>
+            </section>
+
+            <!-- HASH MAPS INTRO -->
+            <section id="hashmaps-intro">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Hash Maps (Super-Arrays)</h2>
+                <p class="text-gray-700 mb-4">
+                    Array looks up by <strong>Index</strong>. Hash Map looks up by <strong>Key</strong> (Identity).
+                </p>
+                <div class="code-block">
+<span class="com">// "Sum Value" -> "Count"</span>
+unordered_map&lt;<span class="ty">int</span>, <span class="ty">int</span>&gt; seenSums;
+seenSums[<span class="num">5</span>] = <span class="num">1</span>;
+<span class="kw">if</span> (seenSums.count(<span class="num">5</span>)) { <span class="com">/* Found! */</span> }
+                </div>
+            </section>
+
+            <!-- CLASSES & OBJECTS -->
+            <section id="classes">
+                <div class="mb-4 text-sm font-bold text-blue-600 uppercase tracking-wide">February 3, 2026</div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Classes & Objects</h2>
+                
+                <div class="space-y-6">
+                    <p class="text-gray-700">OOP encapsulates data and functionality. Example: <code>School</code> class.</p>
+                    <div class="code-block">
+<span class="kw">class</span> <span class="ty">School</span> {
+<span class="kw">public</span>:
+  <span class="ty">string</span> name;
+  <span class="ty">int</span> age;
+  <span class="kw">void</span> <span class="fn">banner</span>() {
+    cout &lt;&lt; name &lt;&lt; <span class="str">" is "</span> &lt;&lt; age &lt;&lt; <span class="str">" years old.\n"</span>;
+  }
+};
+                    </div>
+                    
+                    <h3 class="font-bold text-lg text-gray-800">Multiple Objects</h3>
+                    <div class="bg-gray-100 p-4 rounded border-l-4 border-gray-400">
+                        <p class="font-code text-sm">
+                            School harvard;<br>
+                            harvard.name = "Harvard";<br>
+                            harvard.age = 385;<br><br>
+                            School yale;<br>
+                            yale.name = "Yale";<br>
+                            yale.age = 319;
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ACCESS & ENCAPSULATION -->
+            <section id="encapsulation">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Encapsulation & Accessors</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-gray-800 mb-2">Access Specifiers</h3>
+                        <ul class="list-disc list-inside text-gray-700 text-sm">
+                            <li><strong>private:</strong> Default. Not accessible outside class.</li>
+                            <li><strong>public:</strong> Accessible everywhere.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 mb-2">Getters & Setters</h3>
+                        <p class="text-sm text-gray-700">Use public functions to access private variables.</p>
+                    </div>
+                </div>
+
+                <div class="code-block mt-4">
+<span class="kw">class</span> <span class="ty">Clock</span> {
+<span class="kw">private</span>:
+  <span class="ty">int</span> time = <span class="num">1200</span>;
+<span class="kw">public</span>:
+  <span class="com">// Accessor (Getter)</span>
+  <span class="ty">int</span> <span class="fn">getTime</span>() { <span class="kw">return</span> time; }
+  <span class="com">// Mutator (Setter)</span>
+  <span class="kw">void</span> <span class="fn">setTime</span>(<span class="ty">int</span> new_time) { time = new_time; }
+};
+                </div>
+            </section>
+            
+            <!-- NEW SECTION: INHERITANCE -->
+            <section id="inheritance" class="border-t-2 border-indigo-100 pt-8 mt-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs font-bold uppercase">Extension</span>
+                    <h2 class="text-2xl font-bold text-gray-900">Inheritance</h2>
+                </div>
+                <p class="text-gray-700 mb-4">
+                    The report mentioned that the <code>protected</code> keyword allows "inherited classes" to access members. Inheritance lets one class (Derived) acquire properties from another (Base).
+                </p>
+                <div class="code-block">
+<span class="com">// Base Class</span>
+<span class="kw">class</span> <span class="ty">Animal</span> {
+  <span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">eat</span>() { cout &lt;&lt; <span class="str">"I can eat!"</span>; }
+};
+
+<span class="com">// Derived Class (inherits from Animal)</span>
+<span class="kw">class</span> <span class="ty">Dog</span> : <span class="kw">public</span> <span class="ty">Animal</span> {
+  <span class="kw">public</span>:
+    <span class="kw">void</span> <span class="fn">bark</span>() { cout &lt;&lt; <span class="str">"Woof!"</span>; }
+};
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+  Dog myDog;
+  myDog.eat(); <span class="com">// Inherited from Animal!</span>
+  myDog.bark();
+}
+                </div>
+            </section>
+
+            <!-- CONSTRUCTORS -->
+            <section id="constructors">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Constructors & Destructors</h2>
+                <p class="text-gray-700 mb-4">Special methods called on object creation/destruction.</p>
+                
+                <div class="code-block">
+<span class="kw">class</span> <span class="ty">House</span> {
+<span class="kw">private</span>:
+  <span class="ty">string</span> location;
+  <span class="ty">int</span> rooms;
+<span class="kw">public</span>:
+  <span class="com">// Constructor with Default Params</span>
+  <span class="fn">House</span>(<span class="ty">string</span> loc = <span class="str">"New York"</span>, <span class="ty">int</span> num = <span class="num">5</span>) {
+    location = loc;
+    rooms = num;
+  }
+  <span class="com">// Destructor</span>
+  <span class="fn">~House</span>() {
+    cout &lt;&lt; <span class="str">"Moved away from "</span> &lt;&lt; location;
+  }
+};
+                </div>
+                
+                <h3 class="font-bold text-lg text-gray-800 mt-6 mb-2">Member Initializer Lists</h3>
+                <p class="text-sm text-gray-700 mb-2">Required for <code>const</code> variables.</p>
+                <div class="code-block">
+<span class="fn">Book</span>() : title(<span class="str">"Diary"</span>), pages(<span class="num">100</span>) {}
+                </div>
+            </section>
+
+            <!-- ADVANCED DATA -->
+            <section id="multidimensional">
+                <div class="mb-4 text-sm font-bold text-blue-600 uppercase tracking-wide">Advanced Structures</div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Multidimensional Arrays & Vectors</h2>
+                
+                <div class="code-block">
+<span class="ty">int</span> table[<span class="num">3</span>][<span class="num">5</span>]; <span class="com">// 3 Rows, 5 Columns</span>
+<span class="com">// Traversal</span>
+<span class="kw">for</span> (<span class="ty">int</span> i=0; i&lt;3; i++) {
+  <span class="kw">for</span> (<span class="ty">int</span> j=0; j&lt;3; j++) {
+     cout &lt;&lt; game[i][j];
+  }
+}
+                </div>
+
+                <h3 class="font-bold text-lg text-gray-800 mt-6 mb-2">Vector Methods</h3>
+                <table class="data-table">
+                    <tr><td>.push_back(val)</td><td>Add element to end.</td></tr>
+                    <tr><td>.pop_back()</td><td>Remove last element.</td></tr>
+                    <tr><td>.size()</td><td>Number of elements.</td></tr>
+                    <tr><td>.empty()</td><td>Returns boolean (1 or 0).</td></tr>
+                </table>
+            </section>
+
+            <!-- HASH MAP DEEP DIVE -->
+            <section id="hashmap-methods">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Hash Maps: Deep Dive</h2>
+                
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-bold text-gray-800 mb-2">Methods</h3>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                            <li><code>insert({key, val})</code>: Add pair.</li>
+                            <li><code>erase(key)</code>: Remove pair.</li>
+                            <li><code>count(key)</code>: Check existence (1 or 0).</li>
+                            <li><code>[key]</code>: Access (Warning: Creates if missing).</li>
+                            <li><code>.at(key)</code>: Access (Throws error if missing).</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Ordered vs Unordered Visualizer -->
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                        <h3 class="font-bold text-indigo-900 mb-2">Ordered vs Unordered</h3>
+                        <p class="text-xs text-indigo-800 mb-3">Live Simulation of text example: <code>{2,'b'}, {1,'a'}, {3,'c'}</code></p>
+                        
+                        <div class="space-y-2">
+                            <div class="bg-white p-2 rounded shadow-sm">
+                                <span class="text-xs font-bold text-orange-600 uppercase">Unordered Map</span>
+                                <div class="font-code text-xs mt-1 text-gray-600">
+                                    2 b<br>1 a<br>3 c
+                                </div>
+                            </div>
+                            <div class="bg-white p-2 rounded shadow-sm">
+                                <span class="text-xs font-bold text-blue-600 uppercase">Ordered Map</span>
+                                <div class="font-code text-xs mt-1 text-gray-600">
+                                    1 a<br>2 b<br>3 c <span class="text-green-500 font-bold">&lt;- Sorted by Key!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block mt-6">
+<span class="ty">std::unordered_map</span>&lt;<span class="ty">string</span>, <span class="ty">int</span>&gt; country_codes;
+country_codes[<span class="str">"Japan"</span>] = <span class="num">81</span>;
+country_codes[<span class="str">"Turkey"</span>] = <span class="num">90</span>;
+country_codes[<span class="str">"Pakistan"</span>] = <span class="num">92</span>;
+
+<span class="kw">for</span>(<span class="kw">auto</span> it: country_codes){
+  cout &lt;&lt; it.first &lt;&lt; <span class="str">" "</span> &lt;&lt; it.second &lt;&lt; <span class="str">"\n"</span>;
+}
+                </div>
+            </section>
+
         </div>
-        <div>
-          <h3 class="font-bold mb-2">std::array</h3>
-          <div class="code-block">
-array&lt;<span class="ty">int</span>, <span class="num">3</span>&gt; a;
-          </div>
-        </div>
-      </div>
-    </section>
+    </main>
 
+    <!-- JS Logic -->
+    <script>
+        // Sidebar Toggle for Mobile
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        // Pass by Reference Simulator
+        let valA = 10;
+        let valB = 20;
+
+        function simulateSwap(isReference) {
+            const elA = document.getElementById('var-a');
+            const elB = document.getElementById('var-b');
+            const msg = document.getElementById('swap-msg');
+
+            // Reset visual
+            elA.innerText = "10";
+            elB.innerText = "20";
+            elA.className = "text-2xl font-mono font-bold text-blue-600";
+            elB.className = "text-2xl font-mono font-bold text-green-600";
+
+            msg.innerText = "Swapping...";
+            msg.className = "text-center mt-3 text-sm font-bold h-6 text-gray-500";
+
+            setTimeout(() => {
+                if (isReference) {
+                    // Successful Swap
+                    elA.innerText = "20";
+                    elB.innerText = "10";
+                    msg.innerText = "Success! Originals swapped.";
+                    msg.className = "text-center mt-3 text-sm font-bold h-6 text-green-600";
+                } else {
+                    // Failed Swap (Pass by value)
+                    elA.innerText = "10";
+                    elB.innerText = "20";
+                    msg.innerText = "No Change. (Copies were swapped, not originals)";
+                    msg.className = "text-center mt-3 text-sm font-bold h-6 text-red-500";
+                }
+            }, 600);
+        }
+
+        // Scroll Spy Logic for Sidebar Highlighting
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+
+        const observerOptions = {
+            root: document.getElementById('main-content'),
+            threshold: 0.2 // Trigger when 20% of section is visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+    </script>
+</body>
+</html>
