@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Information Quiz Prep</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --primary: #4F46E5;
+            --secondary: #64748B;
+            --bg-canvas: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-canvas);
+            color: #1E293B;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .math-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Chart Container Styling (Mandatory) */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Canvas Interactive Area */
+        .bloch-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; }
+            .no-print { display: none !important; }
+            .print-break { page-break-inside: avoid; }
+            .shadow-lg { box-shadow: none !important; }
+            .bg-white { background: transparent !important; }
+            .text-indigo-600 { color: black !important; }
+            h1, h2, h3 { color: black !important; }
+            canvas { border: 1px solid #ddd; }
+        }
+    </style>
+    <!-- Chosen Palette: Clean Modern Academic (Inter font, Indigo/Slate colors, focus on readability) -->
+    <!-- Application Structure Plan: 
+         1. Hero/Dashboard: Quick navigation and Exam Readiness check.
+         2. Linear Algebra Foundation: The mathematical language (Vectors, Inner Products, Matrices).
+         3. The Postulates: The rules of the game (State, Observables, Measurement).
+         4. Interactive Lab: Qubits, Bloch Sphere Visualizer, and Measurement Probabilities (High engagement).
+         5. Operators Toolkit: Pauli Matrices and Tensor Products.
+         6. Quick Reference/Cheat Sheet: Printable summary for the user's "markup" request.
+         7. Active Recall Quiz: JS-driven assessment.
+    -->
+    <!-- Visualization & Content Choices:
+         - Bloch Sphere: HTML5 Canvas (2D projection of 3D). Goal: Visualizing Qubit state |ψ⟩.
+         - Measurement Probabilities: Chart.js Bar Chart. Goal: Visualizing Born Rule P(0) vs P(1).
+         - Matrix Operations: HTML Grid/Flex. Goal: Structure definitions without images.
+         - NO SVG/Mermaid used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="pb-12">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-indigo-600 tracking-tight">Quantum<span class="text-slate-700">Prep</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="scrollToSection('linalg')" class="text-gray-600 hover:text-indigo-600 font-medium transition">Linear Algebra</button>
+                    <button onclick="scrollToSection('postulates')" class="text-gray-600 hover:text-indigo-600 font-medium transition">Postulates</button>
+                    <button onclick="scrollToSection('qubits')" class="text-gray-600 hover:text-indigo-600 font-medium transition">Qubits & Bloch</button>
+                    <button onclick="scrollToSection('quiz')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm">Take Quiz</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-white border-b border-gray-100 py-12 px-4 sm:px-6 lg:px-8 print-break">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">
+                Quantum Information <span class="text-indigo-600">Exam Primer</span>
+            </h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
+                Interactive study guide based on Leiden, MIT, and Rutgers lecture notes. 
+                Master Linear Algebra, Postulates, and Qubits before tomorrow.
+            </p>
+            <div class="flex justify-center gap-4 no-print">
+                <button onclick="window.print()" class="flex items-center gap-2 px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition">
+                    <span>🖨️ Print Summary</span>
+                </button>
+                <button onclick="scrollToSection('linalg')" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition shadow-lg hover:shadow-indigo-500/30">
+                    Start Revision
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- SECTION 1: LINEAR ALGEBRA -->
+        <section id="linalg" class="scroll-mt-24 print-break">
+            <div class="mb-6 border-l-4 border-indigo-600 pl-4">
+                <h2 class="text-3xl font-bold text-slate-900">1. Linear Algebra Foundations</h2>
+                <p class="text-slate-600 mt-2">Quantum mechanics is linear algebra with complex numbers. This section reviews the essential vocabulary: Bra-ket notation, inner products, and operators.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Concept Cards -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-indigo-700 mb-4">Notation & Vectors</h3>
+                    <ul class="space-y-4">
+                        <li class="p-3 bg-slate-50 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-slate-800">Ket Vector |ψ⟩</span>
+                                <span class="math-font text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Column Vector</span>
+                            </div>
+                            <p class="text-sm text-slate-600">A vector in Hilbert space. Represents a quantum state.</p>
+                        </li>
+                        <li class="p-3 bg-slate-50 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-slate-800">Bra Vector ⟨ψ|</span>
+                                <span class="math-font text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Row Vector</span>
+                            </div>
+                            <p class="text-sm text-slate-600">The Hermitian conjugate (adjoint) of the Ket. <span class="math-font">|ψ⟩† = ⟨ψ|</span>.</p>
+                        </li>
+                        <li class="p-3 bg-slate-50 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-slate-800">Inner Product</span>
+                                <span class="math-font text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded">Scalar</span>
+                            </div>
+                            <p class="text-sm text-slate-600">Notation: <span class="math-font">⟨φ|ψ⟩</span>. Measure of overlap. If 0, states are orthogonal.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Interactive Inner Product Calculator -->
+                <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 no-print">
+                    <h3 class="text-xl font-bold text-indigo-900 mb-4">Inner Product Lab</h3>
+                    <p class="text-sm text-indigo-700 mb-4">Calculate the inner product of two 2D complex vectors.</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-bold text-indigo-900 mb-1">Ket |ψ⟩</label>
+                            <input type="number" id="psi_r" value="1" class="w-full mb-1 px-2 py-1 text-sm border rounded" placeholder="Real">
+                            <input type="number" id="psi_i" value="0" class="w-full px-2 py-1 text-sm border rounded" placeholder="Imag (i)">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-indigo-900 mb-1">Bra ⟨φ|</label>
+                            <input type="number" id="phi_r" value="0" class="w-full mb-1 px-2 py-1 text-sm border rounded" placeholder="Real">
+                            <input type="number" id="phi_i" value="1" class="w-full px-2 py-1 text-sm border rounded" placeholder="Imag (i)">
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <p class="text-xs text-slate-400 uppercase tracking-wide font-bold">Result ⟨φ|ψ⟩</p>
+                        <p id="inner_prod_result" class="text-2xl font-bold text-indigo-600 math-font mt-1">0</p>
+                        <p class="text-xs text-slate-500 mt-2">Recall: ⟨φ|ψ⟩ = (φ₁)*ψ₁ + (φ₂)*ψ₂</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: POSTULATES -->
+        <section id="postulates" class="scroll-mt-24 print-break">
+            <div class="mb-6 border-l-4 border-indigo-600 pl-4">
+                <h2 class="text-3xl font-bold text-slate-900">2. The Postulates of QM</h2>
+                <p class="text-slate-600 mt-2">The four core rules that govern quantum systems, mapping physical reality to mathematical structures.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Postulate 1 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition border border-slate-100">
+                    <div class="text-indigo-500 font-bold text-sm mb-2">Postulate 1</div>
+                    <h3 class="font-bold text-lg mb-2">State Space</h3>
+                    <p class="text-slate-600 text-sm">Every isolated physical system is associated with a complex Hilbert space <span class="math-font">H</span>. The state is a unit vector <span class="math-font">|ψ⟩</span>.</p>
+                </div>
+                <!-- Postulate 2 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition border border-slate-100">
+                    <div class="text-indigo-500 font-bold text-sm mb-2">Postulate 2</div>
+                    <h3 class="font-bold text-lg mb-2">Evolution</h3>
+                    <p class="text-slate-600 text-sm">Closed systems evolve via Unitary transformation <span class="math-font">U</span>. <br><span class="math-font text-xs">|ψ(t₂)⟩ = U(t₂, t₁) |ψ(t₁)⟩</span>.</p>
+                </div>
+                <!-- Postulate 3 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition border border-slate-100">
+                    <div class="text-indigo-500 font-bold text-sm mb-2">Postulate 3</div>
+                    <h3 class="font-bold text-lg mb-2">Measurement</h3>
+                    <p class="text-slate-600 text-sm">Measurements are described by operators <span class="math-font">{M_m}</span> acting on state space. Probability <span class="math-font">p(m) = ⟨ψ|M_m† M_m|ψ⟩</span>.</p>
+                </div>
+                <!-- Postulate 4 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition border border-slate-100">
+                    <div class="text-indigo-500 font-bold text-sm mb-2">Postulate 4</div>
+                    <h3 class="font-bold text-lg mb-2">Composite Systems</h3>
+                    <p class="text-slate-600 text-sm">State space of composite system is the tensor product of component spaces: <span class="math-font">H_tot = H₁ ⊗ H₂</span>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: QUBITS INTERACTIVE -->
+        <section id="qubits" class="scroll-mt-24 print-break">
+            <div class="mb-6 border-l-4 border-indigo-600 pl-4">
+                <h2 class="text-3xl font-bold text-slate-900">3. Qubits & Bloch Sphere</h2>
+                <p class="text-slate-600 mt-2">Explore the geometric representation of a single qubit state using the Bloch Sphere. Adjust θ (theta) and φ (phi) to see the state change.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
+                
+                <!-- Controls & Stats -->
+                <div class="w-full lg:w-1/3 space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">State Controls</h3>
+                        
+                        <div class="mb-6">
+                            <label class="flex justify-between text-sm font-medium text-slate-700 mb-2">
+                                <span>Theta (θ) - Polar Angle</span>
+                                <span id="theta-val" class="math-font text-indigo-600">0.00π</span>
+                            </label>
+                            <input type="range" id="theta-slider" min="0" max="3.14159" step="0.01" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <p class="text-xs text-slate-400 mt-1">Controls 0 vs 1 probability</p>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="flex justify-between text-sm font-medium text-slate-700 mb-2">
+                                <span>Phi (φ) - Azimuthal Angle</span>
+                                <span id="phi-val" class="math-font text-indigo-600">0.00π</span>
+                            </label>
+                            <input type="range" id="phi-slider" min="0" max="6.28318" step="0.01" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <p class="text-xs text-slate-400 mt-1">Controls Phase (Superposition)</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 rounded border border-slate-100">
+                            <p class="text-xs text-slate-500 uppercase font-bold mb-1">Current State |ψ⟩</p>
+                            <p id="state-display" class="math-font text-lg text-slate-800 break-words">1.00|0⟩ + 0.00|1⟩</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container for Probabilities -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">Measurement Probabilities</h3>
+                        <p class="text-xs text-slate-500 mb-4">Probability of measuring |0⟩ vs |1⟩ (Born Rule)</p>
+                        <div class="chart-container" style="height: 200px;">
+                            <canvas id="probChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div class="w-full lg:w-2/3">
+                    <div class="bg-slate-900 rounded-2xl p-4 flex justify-center items-center relative overflow-hidden">
+                        <canvas id="blochCanvas" width="500" height="500" class="max-w-full h-auto cursor-crosshair"></canvas>
+                        <div class="absolute top-4 left-4 text-white/50 text-xs font-mono pointer-events-none">
+                            2D Projection of Bloch Sphere
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CHEAT SHEET -->
+        <section class="scroll-mt-24">
+            <div class="mb-6 border-l-4 border-indigo-600 pl-4">
+                <h2 class="text-3xl font-bold text-slate-900">4. Quick Reference</h2>
+                <p class="text-slate-600 mt-2">Essential matrices and identities for the exam.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Pauli Matrices -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm print-break">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Pauli Matrices</h3>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <span class="block font-bold text-indigo-600 mb-2">I</span>
+                            <div class="math-font bg-slate-50 p-2 rounded">
+                                [[1, 0],<br>[0, 1]]
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-indigo-600 mb-2">X (Bit Flip)</span>
+                            <div class="math-font bg-slate-50 p-2 rounded">
+                                [[0, 1],<br>[1, 0]]
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-indigo-600 mb-2">Y</span>
+                            <div class="math-font bg-slate-50 p-2 rounded">
+                                [[0, -i],<br>[i, 0]]
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-indigo-600 mb-2">Z (Phase Flip)</span>
+                            <div class="math-font bg-slate-50 p-2 rounded">
+                                [[1, 0],<br>[0, -1]]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Identities -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm print-break">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Key Identities</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex justify-between">
+                            <span class="text-slate-600">Completeness Relation</span>
+                            <span class="math-font font-bold">Σ |i⟩⟨i| = I</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-600">Trace</span>
+                            <span class="math-font font-bold">Tr(A) = Σ ⟨i|A|i⟩</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-600">Expectation Value</span>
+                            <span class="math-font font-bold">⟨A⟩ = ⟨ψ|A|ψ⟩</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-600">Hadamard Gate</span>
+                            <span class="math-font font-bold">H = (X+Z)/√2</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: QUIZ -->
+        <section id="quiz" class="scroll-mt-24 no-print">
+            <div class="bg-indigo-900 rounded-3xl p-8 md:p-12 text-center text-white">
+                <h2 class="text-3xl font-bold mb-6">Ready to test yourself?</h2>
+                <div id="quiz-container" class="max-w-2xl mx-auto">
+                    <div id="question-box" class="bg-white/10 backdrop-blur rounded-xl p-8 mb-6 hidden">
+                        <p id="question-text" class="text-xl font-medium mb-6">Question goes here...</p>
+                        <div id="options-grid" class="grid grid-cols-1 gap-3 text-left">
+                            <!-- Options injected via JS -->
+                        </div>
+                    </div>
+                    <button id="start-quiz-btn" class="bg-white text-indigo-900 px-8 py-3 rounded-full font-bold hover:bg-indigo-50 transition transform hover:scale-105">Start Practice Quiz</button>
+                    <p id="score-display" class="mt-4 font-mono text-indigo-200 hidden"></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-50 border-t border-slate-200 py-12 mt-12 no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>Generated for Quantum Information Quiz Preparation.</p>
+            <p class="mt-2">Based on standard curriculum: Linear Algebra, Postulates, Qubits.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Inner Product Calculator Logic ---
+        function updateInnerProduct() {
+            const psiR = parseFloat(document.getElementById('psi_r').value) || 0;
+            const psiI = parseFloat(document.getElementById('psi_i').value) || 0;
+            const phiR = parseFloat(document.getElementById('phi_r').value) || 0;
+            const phiI = parseFloat(document.getElementById('phi_i').value) || 0;
+
+            // <phi|psi> = (phiR - i*phiI) * (psiR + i*psiI)
+            // = (phiR*psiR + phiI*psiI) + i(phiR*psiI - phiI*psiR)
+            
+            const realPart = (phiR * psiR) + (phiI * psiI);
+            const imagPart = (phiR * psiI) - (phiI * psiR);
+
+            let resultStr = realPart.toFixed(2);
+            if (imagPart >= 0) {
+                resultStr += " + " + imagPart.toFixed(2) + "i";
+            } else {
+                resultStr += " - " + Math.abs(imagPart).toFixed(2) + "i";
+            }
+
+            document.getElementById('inner_prod_result').textContent = resultStr;
+        }
+
+        ['psi_r', 'psi_i', 'phi_r', 'phi_i'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateInnerProduct);
+        });
+
+        // --- 2. Bloch Sphere Visualizer & Chart Logic ---
+        
+        // Initialize Chart
+        const ctxProb = document.getElementById('probChart').getContext('2d');
+        const probChart = new Chart(ctxProb, {
+            type: 'bar',
+            data: {
+                labels: ['|0⟩', '|1⟩'],
+                datasets: [{
+                    label: 'Probability',
+                    data: [1, 0],
+                    backgroundColor: ['#4F46E5', '#10B981'],
+                    borderRadius: 8,
+                    barThickness: 50
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1,
+                        grid: { display: false }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Canvas Drawing
+        const canvas = document.getElementById('blochCanvas');
+        const ctx = canvas.getContext('2d');
+        let theta = 0;
+        let phi = 0;
+
+        function drawBlochSphere() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const r = 180; // Radius
+
+            // Clear
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Sphere Outline
+            ctx.strokeStyle = '#64748B'; // slate-500
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Draw Equator (Ellipse)
+            ctx.strokeStyle = '#94a3b8'; // slate-400
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, r, r * 0.3, 0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Draw Z-axis
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - r);
+            ctx.lineTo(cx, cy + r);
+            ctx.stroke();
+
+            // Draw Y-axis
+            ctx.beginPath();
+            ctx.moveTo(cx - r, cy);
+            ctx.lineTo(cx + r, cy);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Calculate Vector Position
+            // x = r * sin(theta) * cos(phi)
+            // y = r * sin(theta) * sin(phi)  <-- This is 'depth' in 2D
+            // z = r * cos(theta)
+            
+            // 2D Projection mapping:
+            // 2D X = 3D x + projected y
+            // 2D Y = 3D z + projected y
+            // We'll simplify: 
+            // visual x = cx + r * sin(theta) * cos(phi - Math.PI/2) -- rotation for view
+            // But let's stick to standard math convention mapped to 2D canvas:
+            // Top is |0> (theta=0), Bottom is |1> (theta=PI)
+            
+            // Visual mapping for standard Bloch view
+            // Y_canvas corresponds to -Z_physics (up is +Z in physics, -Y in canvas)
+            // X_canvas corresponds to Y_physics (roughly)
+            
+            // Standard Front view:
+            // Canvas X = center + r * sin(theta) * sin(phi)
+            // Canvas Y = center - r * cos(theta)
+            // Depth effect (x_phys): r * sin(theta) * cos(phi) used for scaling/perspective maybe?
+            
+            // Let's use a simple isometric-like projection
+            // x_phys = sin(th)cos(ph)
+            // y_phys = sin(th)sin(ph)
+            // z_phys = cos(th)
+            
+            const x_phys = Math.sin(theta) * Math.cos(phi);
+            const y_phys = Math.sin(theta) * Math.sin(phi);
+            const z_phys = Math.cos(theta);
+
+            // Project 3D (x, y, z) to 2D (u, v)
+            // View angle: looking slightly down and from the side
+            // Simple projection for Bloch sphere diagrams:
+            // Vertical axis is Z.
+            // Horizontal ellipse axis is Y.
+            // Depth axis is X.
+            
+            // Let's map Y_phys to Canvas X
+            // Let's map Z_phys to Canvas Y (inverted)
+            // Let's use X_phys to modify perspective slightly
+            
+            const px = cx + (r * y_phys); 
+            // For depth effect on the equator, we flatten the x component
+            const depth_offset = x_phys * (r * 0.3); 
+            const py = cy - (r * z_phys) + depth_offset;
+
+            // Draw Vector
+            ctx.strokeStyle = '#4F46E5'; // Indigo-600
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(px, py);
+            ctx.stroke();
+
+            // Draw Point
+            ctx.fillStyle = '#4F46E5';
+            ctx.beginPath();
+            ctx.arc(px, py, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Labels
+            ctx.fillStyle = '#1E293B';
+            ctx.font = '16px monospace';
+            ctx.fillText('|0⟩', cx - 10, cy - r - 10);
+            ctx.fillText('|1⟩', cx - 10, cy + r + 20);
+            
+            // Update Text & Chart
+            updateStats();
+        }
+
+        function updateStats() {
+            // Math values
+            const cosHalf = Math.cos(theta/2);
+            const sinHalf = Math.sin(theta/2);
+            
+            // Probabilities
+            const p0 = cosHalf * cosHalf;
+            const p1 = sinHalf * sinHalf;
+
+            // Update Chart
+            probChart.data.datasets[0].data = [p0, p1];
+            probChart.update();
+
+            // Update Text Display
+            const realCoeff = cosHalf.toFixed(2);
+            const imagCoeff = sinHalf.toFixed(2);
+            const phiDeg = (phi * 180 / Math.PI).toFixed(0);
+            
+            let phiStr = "";
+            if (phi > 0.1) phiStr = `e^(${phiDeg}°i)`;
+            
+            const stateStr = `${realCoeff}|0⟩ + ${phiStr}${imagCoeff}|1⟩`;
+            document.getElementById('state-display').textContent = stateStr;
+
+            document.getElementById('theta-val').textContent = (theta / Math.PI).toFixed(2) + "π";
+            document.getElementById('phi-val').textContent = (phi / Math.PI).toFixed(2) + "π";
+        }
+
+        // Listeners
+        document.getElementById('theta-slider').addEventListener('input', (e) => {
+            theta = parseFloat(e.target.value);
+            drawBlochSphere();
+        });
+        document.getElementById('phi-slider').addEventListener('input', (e) => {
+            phi = parseFloat(e.target.value);
+            drawBlochSphere();
+        });
+
+        // Initial Draw
+        drawBlochSphere();
+
+
+        // --- 3. Quiz Logic ---
+        const questions = [
+            {
+                q: "If ⟨ψ|φ⟩ = 0, the states |ψ⟩ and |φ⟩ are:",
+                options: ["Identical", "Normalized", "Orthogonal", "Entangled"],
+                ans: 2
+            },
+            {
+                q: "Which matrix represents the bit-flip operation (NOT gate)?",
+                options: ["Pauli Z", "Pauli X", "Pauli Y", "Identity"],
+                ans: 1
+            },
+            {
+                q: "For a qubit in state |ψ⟩ = α|0⟩ + β|1⟩, what is the probability of measuring |0⟩?",
+                options: ["α", "β", "|α|²", "|β|²"],
+                ans: 2
+            },
+            {
+                q: "A Hermitian operator must have:",
+                options: ["Unitary eigenvalues", "Real eigenvalues", "Imaginary eigenvalues", "Zero eigenvalues"],
+                ans: 1
+            },
+            {
+                q: "What is the dimension of the Hilbert space for a system of 2 qubits?",
+                options: ["2", "4", "8", "16"],
+                ans: 1
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        const quizBtn = document.getElementById('start-quiz-btn');
+        const qBox = document.getElementById('question-box');
+        const qText = document.getElementById('question-text');
+        const optGrid = document.getElementById('options-grid');
+        const scoreDisp = document.getElementById('score-display');
+
+        quizBtn.addEventListener('click', startQuiz);
+
+        function startQuiz() {
+            quizBtn.classList.add('hidden');
+            qBox.classList.remove('hidden');
+            score = 0;
+            currentQ = 0;
+            scoreDisp.classList.add('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQ >= questions.length) {
+                endQuiz();
+                return;
+            }
+            const q = questions[currentQ];
+            qText.textContent = `${currentQ + 1}. ${q.q}`;
+            optGrid.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white/10 hover:bg-white/20 border border-white/30 text-white py-3 px-4 rounded-lg transition text-left";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(idx);
+                optGrid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected) {
+            const correct = questions[currentQ].ans;
+            if (selected === correct) score++;
+            currentQ++;
+            loadQuestion();
+        }
+
+        function endQuiz() {
+            qBox.classList.add('hidden');
+            quizBtn.classList.remove('hidden');
+            quizBtn.textContent = "Retake Quiz";
+            scoreDisp.textContent = `You scored ${score} out of ${questions.length}`;
+            scoreDisp.classList.remove('hidden');
+        }
+
+        // --- Navigation ---
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
